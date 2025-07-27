@@ -1,0 +1,32 @@
+local basalt = require("../../basalt")
+
+local mainFrame = basalt.createFrame():setTheme({FrameBG = colors.lightGray, FrameFG = colors.black})
+
+function Send()
+    os.queueEvent("program_event", 0, "notes", "ping", "healthy")
+end
+
+local flex = mainFrame:addFlexbox():setWrap("wrap"):setPosition(1, 1):setSize("parent.w", "parent.h"):setJustifyContent("center"):setSpacing(0)
+flex:addBreak()
+local row1 = flex:addFlexbox():setWrap("wrap"):setSize("parent.w - 4", 3):setJustifyContent("space-evenly")
+row1:addButton():setText("1"):setSize(5,3)
+row1:addButton():setText("2"):setSize(5,3)
+row1:addButton():setText("3"):setSize(5,3)
+flex:addBreak()
+flex:addBreak()
+local row2 = flex:addFlexbox():setWrap("wrap"):setSize("parent.w - 4", 3):setJustifyContent("space-evenly")
+row2:addButton():setText("4"):setSize(5,3)
+row2:addButton():setText("5"):setSize(5,3)
+row2:addButton():setText("6"):setSize(5,3)
+flex:addBreak()
+flex:addBreak()
+local row3 = flex:addFlexbox():setWrap("wrap"):setSize("parent.w - 4", 3):setJustifyContent("space-evenly")
+row3:addButton():setText("7"):setSize(5,3)
+row3:addButton():setText("8"):setSize(5,3)
+row3:addButton():setText("9"):setSize(5,3)
+flex:addBreak()
+flex:addBreak()
+local row4 = flex:addFlexbox():setWrap("wrap"):setSize("parent.w - 4", 3):setJustifyContent("space-evenly")
+row4:addButton():setText("0"):setSize(5,3):onClick(Send)
+
+basalt.autoUpdate()
