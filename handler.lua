@@ -25,10 +25,10 @@ function handler.checkperms()
     local perminfo = debug.getinfo(2, "S")
     local perm = string.gsub(perminfo.source,".lua","")
     local appinfo = debug.getinfo(3, "S")
-    local name = string.gsub(string.gsub(appinfo.source,"os/apps/",""),".lua","")
+    local name = string.gsub(string.gsub(appinfo.source,"/os/apps/", ""),"/[^/]+%.lua$", "")
     if settings.get("perms." .. perm .. "." .. appinfo.source) == true then
         return true
-    elseif handler.popup(colors.orange,"Do you want to grant " .. name .. " the permission \"" .. perm .. "\"?", "Yes", "No") == 1 then
+    elseif handler.popup(colors.orange,"Do you want to grant " .. NewApp[ResolveAppName(name)].name .. " the permission \"" .. perm .. "\"?", "Yes", "No") == 1 then
         settings.set("perms." .. perm .. "." .. appinfo.source, true)
         settings.save("/.settings")
         return true

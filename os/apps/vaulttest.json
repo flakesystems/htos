@@ -1,0 +1,12 @@
+{
+    "displayname": "Vaulttest",
+    "identifier": "vaulttest",
+    "author": "Kuschelcraft",
+    "version": "beta-1.0",
+    "run": "/os/apps/vaulttest/vaulttest.lua",
+    "updater": "/os/apps/vaulttest/updater.lua",
+    "automatic_updates": true,
+    "versionfile": "pastebin get m5CDWzU7 /os/apps/vaulttest/version.txt",
+    "installer": "pastebin get ApLvEf5x /os/apps/vaulttest/updater.lua",
+    "uninstaller": "/os/apps/vaulttest/uninstaller.lua"
+}

@@ -1,0 +1,13 @@
+{
+    "displayname": "Settings",
+    "identifier": "settings",
+    "author": "Kuschelcraft",
+    "version": "beta-1.0",
+    "run": "/os/apps/settings/settings.lua",
+    "updater": "/os/apps/settings/updater.lua",
+    "automatic_updates": true,
+    "versionfile": "pastebin get m5CDWzU7 /os/apps/settings/version.txt",
+    "installer": "pastebin get ApLvEf5x /os/apps/settings/updater.lua",
+    "uninstaller": "/os/apps/settings/uninstaller.lua",
+    "system_app": true
+}

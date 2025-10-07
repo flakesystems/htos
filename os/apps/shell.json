@@ -1,0 +1,13 @@
+{
+    "displayname": "Terminal",
+    "identifier": "shell",
+    "author": "Kuschelcraft",
+    "version": "beta-1.0",
+    "run": "/os/apps/shell/shell.lua",
+    "updater": "/os/apps/shell/updater.lua",
+    "automatic_updates": true,
+    "versionfile": "pastebin get m5CDWzU7 /os/apps/shell/version.txt",
+    "installer": "pastebin get ApLvEf5x /os/apps/shell/updater.lua",
+    "uninstaller": "/os/apps/shell/uninstaller.lua",
+    "system_app": true
+}

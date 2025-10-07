@@ -1,0 +1,13 @@
+{
+    "displayname": "HT Market",
+    "identifier": "htmarket",
+    "author": "Kuschelcraft",
+    "version": "beta-1.0",
+    "run": "/os/apps/htmarket/htmarket.lua",
+    "updater": "/os/apps/htmarket/updater.lua",
+    "automatic_updates": true,
+    "versionfile": "pastebin get m5CDWzU7 /os/apps/htmarket/version.txt",
+    "installer": "pastebin get ApLvEf5x /os/apps/htmarket/updater.lua",
+    "uninstaller": "/os/apps/htmarket/uninstaller.lua",
+    "system_app": true
+}

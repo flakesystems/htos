@@ -1,0 +1,12 @@
+{
+    "displayname": "Test",
+    "identifier": "test",
+    "author": "Kuschelcraft",
+    "version": "beta-1.0",
+    "run": "/os/apps/test/test.lua",
+    "updater": "/os/apps/test/updater.lua",
+    "automatic_updates": true,
+    "versionfile": "pastebin get m5CDWzU7 /os/apps/test/version.txt",
+    "installer": "pastebin get ApLvEf5x /os/apps/test/updater.lua",
+    "uninstaller": "/os/apps/test/uninstaller.lua"
+}

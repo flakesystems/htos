@@ -83,7 +83,7 @@ flex:addButton():setText("General"):setSize(10,3):onClick(function(self,event,bu
   end)
   flex:addButton():setText("Logs"):setSize(10,3):onClick(function(self,event,button,x,y)
     if(event=="mouse_click")and(button==1)then
-        openSubFrame(5)
+        openSubFrame(6)
     end
   end)
 

@@ -10,44 +10,109 @@ function Visualiser()
         FrameFG = colors.black
     })
 
-    -- App metadata table
-    local newApp = {}
-    newApp[0] = {
-        name = "unexpected error",
-        path = "nil",
-        index = 0,
-        sub = 0,
-    }
 
-    -- Initialize UI subframes and other tables
-    local i = 1
-    local sub = {
-        main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h - 2"),
-    }
-    local programs = {}
-    local messageQueues = {}
 
-    -- Scan /os/apps directory and register each .lua file as an app
-    for _, file in ipairs(fs.list("/os/apps")) do
-        table.insert(sub, main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h - 2"):hide())
-        local app = string.gsub(file,".lua","")
-        table.insert(newApp, {
-            name = app,
-            path = file,
-            index = i,
-            sub = 0,
-        })
-        messageQueues[app] = {}
-        i = i + 1
-    end
+-- App metadata table
+NewApp = {}
+NewApp[0] = {
+    name = "unexpected error",
+    path = "nil",
+    index = 0,
+    sub = 0,
+}
 
-    -- Helper to switch visible subframe
-    local function openSubFrame(id)
-        if sub[id] ~= nil then
-            for _, v in pairs(sub) do v:hide() end
-            sub[id]:show()
+-- Initialize UI subframes and other tables
+local i = 1
+local sub = {
+    main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h - 2"),
+}
+local programs = {}
+local messageQueues = {}
+
+-- === NEW APP REGISTER HANDLER ===
+for _, file in ipairs(fs.list("/os/apps")) do
+    if file:match("%.json$") then
+        local path = "/os/apps/" .. file
+        local f = fs.open(path, "r")
+
+        if f then
+            local ok, data = pcall(function()
+                return textutils.unserializeJSON(f.readAll())
+            end)
+            f.close()
+
+            if ok and type(data) == "table" and data.identifier and data.displayname and data.run then
+                table.insert(sub, main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h - 2"):hide())
+
+                table.insert(NewApp, {
+                    id = data.identifier,
+                    name = data.displayname,
+                    author = data.author or "Unknown",
+                    version = data.version or "1.0",
+                    path = data.run,
+                    updater = data.updater or nil,
+                    auto_update = data.automatic_updates or false,
+                    versionfile = data.versionfile or nil,
+                    installer = data.installer or nil,
+                    uninstaller = data.uninstaller or nil,
+                    system_app = data.system_app or false,
+                    index = i,
+                    sub = 0,
+                })
+
+                messageQueues[data.identifier] = {}
+                i = i + 1
+            else
+                print("Invalid or missing fields in:", file)
+            end
+        else
+            print("Failed to open:", file)
         end
+    elseif file:match("%.lua$") then
+        if not fs.exists("/os/apps/" .. string.gsub(file,".lua","") .. "/") then
+            fs.makeDir("/os/apps/" .. string.gsub(file,".lua",""))
+            fs.move("/os/apps/" .. file, "/os/apps/" .. string.gsub(file,".lua","") .. "/" .. file)
+            local f = fs.open("/os/apps/" .. string.gsub(file,".lua","") .. ".json", "w")
+            f.write(textutils.serialiseJSON({
+                identifier = string.gsub(file,".lua",""),
+                displayname = string.gsub(file,".lua",""),
+                run = "/os/apps/" .. string.gsub(file,".lua","") .. "/" .. file
+            }))
+            f.close()
+            table.insert(sub, main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h - 2"):hide())
+            table.insert(NewApp, {
+                id = string.gsub(file,".lua",""),
+                name = string.gsub(file,".lua",""),
+                author = "Unknown",
+                version = "1.0",
+                path = "/os/apps/" .. string.gsub(file,".lua","") .. "/" .. file,
+                updater = nil,
+                auto_update = false,
+                versionfile = nil,
+                installer = nil,
+                uninstaller = nil,
+                system_app = false,
+                index = i,
+                sub = 0,
+            })
+            messageQueues[string.gsub(file,".lua","")] = {}
+            i = i + 1
+            Log("Converted legacy app to JSON format: " .. string.gsub(file,".lua",""), "INFO")
+        else
+            Log("Found legacy app with mismatching id: " .. string.gsub(file,".lua",""),"WARN")
+        end
+
     end
+end
+-- === END NEW APP REGISTER HANDLER ===
+
+-- Helper to switch visible subframe
+local function openSubFrame(id)
+    if sub[id] ~= nil then
+        for _, v in pairs(sub) do v:hide() end
+        sub[id]:show()
+    end
+end
 
     --Create Top Bar
     local topbar = main:addFrame()
@@ -117,7 +182,7 @@ function Visualiser()
 
     -- Helper to find app index by name
     function CheckAppName(name)
-        for _, app in ipairs(newApp) do
+        for _, app in ipairs(NewApp) do
             if app.name == name then return app.index end
         end
         return nil
@@ -144,7 +209,7 @@ function Visualiser()
         elseif type(rmessage.data) == "nil" then
             Log("Received message with nil data", "ERROR")
         elseif type(CheckAppName(rmessage.dest)) == "nil" then
-            Log("Received message for unresolvable appname:" .. rmessage.dest, "WARNING")
+            Log("Received message for unresolvable appname:" .. rmessage.dest, "WARN")
         else
             if programs[rmessage.dest] then
                 programs[rmessage.dest]:injectEvent("app_message", false, rmessage.sender, textutils.serialise({param = rmessage.param, data = rmessage.data}))
@@ -167,89 +232,91 @@ function Visualiser()
     end)
 
     -- Store all app launcher buttons
-    AppButton = {}
+AppButton = {}
 
-    -- Helper to resolve app name to its index
-    function ResolveAppName(name)
-        for i, app in ipairs(newApp) do
-            if app.name == name then return app.index end
-        end
+-- Helper to resolve app name to its index
+function ResolveAppName(name)
+    for i, app in ipairs(NewApp) do
+        if app.id == name then return app.index end
     end
+end
 
-    -- Add launcher buttons for each app
-    for _, appData in ipairs(newApp) do
-        table.insert(AppButton, flex:addButton()
-            :setText(appData.name)
-            :setSize(10,3)
-            :onClick(function(self,event,button,x,y)
-                if (event=="mouse_click") and (button==1) then
-                    local wdh = menubar:getItemCount()
-                    local menusuc = 0
+-- Add launcher buttons for each app
+for _, appData in ipairs(NewApp) do
+    table.insert(AppButton, flex:addButton()
+        :setText(appData.name)
+        :setSize(11,3)
+        :onClick(function(self, event, button, x, y)
+            if (event == "mouse_click") and (button == 1) then
+                local wdh = menubar:getItemCount()
+                local menusuc = 0
 
-                    -- Check if already in menu
-                    for l = wdh,1,-1 do
-                        if menubar:getItem(l).text == appData.name then
-                            menusuc = 1
-                            openSubFrame(l)
-                            menubar:selectItem(l)
-                            break
-                        end
-                    end
-
-                    -- If not, add to menu
-                    if menusuc == 0 then
-                        menubar:addItem(appData.name)
-                        openSubFrame(wdh + 1)
-                        menubar:selectItem(wdh + 1)
-                        newApp[appData.index].sub = wdh + 1
-
-                        -- Execute the app in the subframe
-                        programs[appData.name] = sub[newApp[appData.index].sub]:addProgram()
-                            :execute("os/apps/" .. appData.path)
-                            :setSize("parent.w","parent.h")
-
-                        -- Process queued messages
-                        for _, queued in ipairs(messageQueues[appData.name]) do
-                            programs[appData.name]:injectEvent("app_message", false, queued.sender, textutils.serialise({param = queued.param, data = queued.data}))
-                        end
-                        messageQueues[appData.name] = {}
-                        AppButton[ResolveAppName(appData.name)]:setBackground(colors.gray)
-                        ResetNotificationcenter()
-
-                        -- Add close button
-                        sub[newApp[appData.index].sub]:addButton()
-                            :setText("X")
-                            :setPosition("parent.w - 2",1)
-                            :setSize(3,1)
-                            :setBackground(16384)
-                            :onClick(function(self,event,button,x,y)
-                                if (event=="mouse_click") and (button==1) then
-                                    menubar:removeItem(wdh + 1)
-                                    newApp[appData.index].sub = 0
-                                    programs[appData.name] = nil
-                                    openSubFrame(1)
-                                    menubar:selectItem(1)
-                                end
-                            end)
+                -- Check if already in menu
+                for l = wdh, 1, -1 do
+                    if menubar:getItem(l).text == appData.name then
+                        menusuc = 1
+                        openSubFrame(l)
+                        menubar:selectItem(l)
+                        break
                     end
                 end
-            end)
-        )
-    end
+
+                -- If not, add to menu
+                if menusuc == 0 then
+                    menubar:addItem(appData.name)
+                    openSubFrame(wdh + 1)
+                    menubar:selectItem(wdh + 1)
+                    NewApp[appData.index].sub = wdh + 1
+
+                    -- Execute the app in the subframe
+                    programs[appData.id] = sub[NewApp[appData.index].sub]:addProgram()
+                        :execute(appData.path)
+                        :setSize("parent.w", "parent.h")
+
+                    -- Process queued messages
+                    for _, queued in ipairs(messageQueues[appData.id]) do
+                        programs[appData.id]:injectEvent("app_message", false, queued.sender, textutils.serialize({
+                            param = queued.param,
+                            data = queued.data
+                        }))
+                    end
+                    messageQueues[appData.id] = {}
+                    AppButton[ResolveAppName(appData.id)]:setBackground(colors.gray)
+                    ResetNotificationcenter()
+
+                    -- Add close button
+                    sub[NewApp[appData.index].sub]:addButton()
+                        :setText("X")
+                        :setPosition("parent.w - 2", 1)
+                        :setSize(3, 1)
+                        :setBackground(16384)
+                        :onClick(function(self, event, button, x, y)
+                            if (event == "mouse_click") and (button == 1) then
+                                menubar:removeItem(wdh + 1)
+                                NewApp[appData.index].sub = 0
+                                programs[appData.id] = nil
+                                openSubFrame(1)
+                                menubar:selectItem(1)
+                            end
+                        end)
+                end
+            end
+        end)
+    )
+end
 
 
     --Popup
     function Popup(color,label, btn1, btn2)
         local popup = main:addMovableFrame():setBackground(color):setSize("parent.w / 2", "parent.h / 2"):setPosition("parent.w / 4", "parent.h / 4")
         popup:addPane():setSize("parent.w", 1):setBackground(false,"\45", colors.black):setPosition(1, 1)
-        popup:addButton():setText("X"):setPosition("parent.w - 2",1):setSize(3,1):setBackground(16384)
-                            :onClick(function(self,event,button,x,y)
-                                if (event=="mouse_click") and (button==1) then
-                                    popup:setZIndex(-10)
-                                    popup:remove()
-                                    os.queueEvent("popup_return_event", 0)
-                                end
-                            end)
+        popup:addButton():setText("X"):setPosition("parent.w - 2",1):setSize(3,1):setBackground(16384):onClick(function(self,event,button,x,y)
+            if (event=="mouse_click") and (button==1) then
+                popup:setZIndex(-10)
+                popup:remove()
+                os.queueEvent("popup_return_event", 0)
+            end
+        end)
         
         local container = popup:addScrollableFrame():setSize("parent.w - 2", 4):setPosition(2, 2):setBackground(color)
         local labelText = label
@@ -276,20 +343,20 @@ function Visualiser()
         local buttonflex = flex:addFlexbox():setBackground(color):setSize("parent.w - 1", 3):setJustifyContent("center")
         if not btn1 == false then
             buttonflex:addButton():setText(btn1):setFlexBasis(1):setFlexGrow(1):onClick(function(self,event,button,x,y)
-                                    if (event=="mouse_click") and (button==1) then
-                                        popup:setZIndex(-10)
-                                        popup:remove()
-                                        os.queueEvent("popup_return_event", 1)
-                                    end
-                                end)
+                if (event=="mouse_click") and (button==1) then
+                    popup:setZIndex(-10)
+                    popup:remove()
+                    os.queueEvent("popup_return_event", 1)
+                end
+            end)
             if not btn2 == false then
                 buttonflex:addButton():setText(btn2):setFlexBasis(1):setFlexGrow(1):onClick(function(self,event,button,x,y)
-                                        if (event=="mouse_click") and (button==1) then
-                                            popup:setZIndex(-10)
-                                            popup:remove()
-                                            os.queueEvent("popup_return_event", 2)
-                                        end
-                                    end)
+                    if (event=="mouse_click") and (button==1) then
+                        popup:setZIndex(-10)
+                        popup:remove()
+                        os.queueEvent("popup_return_event", 2)
+                    end
+                end)
             end
         end
     end
