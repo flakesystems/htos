@@ -1,0 +1,7 @@
+{
+  [ "minex.default_program" ] = "edit",
+  [ "dev.enabled" ] = true,
+  [ "general.timeFormat" ] = 1,
+  [ "minex.programs.nfp" ] = "paint",
+  [ "general.Label" ] = "htos0",
+}
