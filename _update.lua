@@ -11,11 +11,11 @@ local htosAppSettingsCode = "mkxBqrig"
 local htosAppSettingsName = "settings.lua"
 local versionlink = "m5CDWzU7"
 local initialisefileCode = "Jys8jH1g"
-local initialisefileName = "initialise.lua"
+local initialisefileName = "_initialise.lua"
 local logfileCode = "FbEpBfCG"
-local logfileName = "log.lua"
+local logfileName = "_log.lua"
 local networkfileCode = "ZLcJcYtq"
-local networkfileName = "network.lua"
+local networkfileName = "_network.lua"
 local logobjectfileCode = "8waeN33W"
 local logobjectfileName = "logdisplay.lua"
 local vaultlibfileCode = "GmXbTYpE"
@@ -34,9 +34,12 @@ local function installBasalt()
     shell.run("wget run https://raw.githubusercontent.com/Pyroxenium/Basalt/refs/heads/master/docs/install.lua release basalt-1.7.0.lua")
 
 -- Wait until Basalt is downloaded and installed
-while not fs.exists("basalt.lua") do
+while not fs.exists("basalt.lua") or not fs.exists("_basalt.lua") do
     print("Waiting for Basalt to be downloaded...")
     sleep(1)  -- Wait for a second before checking again
+end
+if fs.exists("basalt.lua") then
+    fs.move("basalt.lua","_basalt.lua")
 end
 end
 

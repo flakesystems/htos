@@ -1,6 +1,6 @@
 -- Name der herunterzuladenden Datei
 local pastebinCode = "bi6C2PcM"
-local fileName = "update.lua"
+local fileName = "_update.lua"
 
 -- Funktion zum Herunterladen und Überschreiben der Datei
 local function downloadFile()

@@ -1,4 +1,4 @@
-local handler = require("/handler")
+local handler = require("_handler")
 
 local vault = {}
 

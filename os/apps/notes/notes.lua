@@ -1,4 +1,4 @@
-require("../../log")
+require("_log")
 
 local running = true
 

@@ -66,7 +66,7 @@ local function checkforupdate()
       end
       shell.run("pastebin get " .. "bi6C2PcM" .. " " .. "update.lua")
       print("[*] Updating...")
-      --shell.run("update.lua")
+      --shell.run("_update.lua")
     end
 end
 

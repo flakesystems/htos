@@ -1,4 +1,4 @@
-require("/log")
+require("_log")
 local acc = {}
 
 function acc.login(username, password)
