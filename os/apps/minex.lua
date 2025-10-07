@@ -1,1 +1,0 @@
-shell.run("/minex/main.lua")

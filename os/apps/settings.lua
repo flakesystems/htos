@@ -12,6 +12,7 @@ local sub = { -- here we create a table where we gonna add some frames
     main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h"):hide(),
     main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h"):hide(),
     main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h"):hide(),
+    main:addFrame():setPosition(1, 2):setSize("parent.w", "parent.h"):hide(),
 }
 
 local function openSubFrame(id) -- we create a function which switches the frame for us
@@ -73,6 +74,11 @@ flex:addButton():setText("General"):setSize(10,3):onClick(function(self,event,bu
   flex:addButton():setText("Account"):setSize(10,3):onClick(function(self,event,button,x,y)
     if(event=="mouse_click")and(button==1)then
         openSubFrame(4)
+    end
+  end)
+  flex:addButton():setText("Apps"):setSize(10,3):onClick(function(self,event,button,x,y)
+    if(event=="mouse_click")and(button==1)then
+        openSubFrame(5)
     end
   end)
   flex:addButton():setText("Logs"):setSize(10,3):onClick(function(self,event,button,x,y)
@@ -262,10 +268,70 @@ back:onReposition(onBackReposition)
 
 flex:addLabel():setText("Work in progress...")
 
-
---Logs(5)
+--Apps(5)
 
 local page = sub[5]:addFlexbox():setPosition(2, 1):setSize("parent.w - 2", "parent.h - 1"):setWrap("wrap"):setSpacing(0)
+page:addLabel():setText("Apps ")
+
+--Back
+
+local back = page:addButton():setText("Back"):setSize("self.w / 2", 1):onClick(function(self,event,button,x,y)
+    if(event=="mouse_click")and(button==1)then
+        openSubFrame(1)
+    end
+  end)
+
+local backPosx, backPosy = back:getPosition()
+
+page:addBreak()
+
+local flex = sub[5]:addFlexbox():setSize("parent.w - 2","parent.h - 4"):setPosition(2, 2):setDirection("column")
+
+local function onBackReposition()
+    local x, y = back:getPosition()
+    local newPos = y - backPosy
+    if (newPos > 0) then
+        flex:setPosition(2, 5)
+    end
+    if (newPos == 0) then
+        flex:setPosition(2, 3)
+    end
+end
+
+back:onReposition(onBackReposition)
+
+--Content
+
+    local item = {}
+    local perms = {}
+    -- Scan /os/apps directory and register each .lua file as an app
+    local i = 1
+    for _, file in ipairs(fs.list("/os/apps")) do
+        table.insert(item, flex:addFrame():setSize("parent.w * 2", 3):setBackground(colors.cyan))
+        table.insert(perms, main:addFrame():setSize("parent.w", "parent.h"):setPosition("parent.w + 1", 1):setBackground(colors.white))
+        local name = string.gsub(file,".lua","")
+        item[i]:addLabel():setText(name):setPosition(1, 2)
+        item[i]:addButton():setText("Permissions"):setSize(13, 3):setPosition("parent.w - 28", 1):onClick(function(self,event,button,x,y)
+            if(event=="mouse_click")and(button==1)then
+                -- local temp = perms[i]:getX()
+                -- perms[i]:animatePosition(1, 1, 1)
+                -- perms[i]:addButton():setText("<-"):setPosition(1,1):setSize(4,1):setBackground(colors.gray)
+                --             :onClick(function(self,event,button,x,y)
+                --                 if (event=="mouse_click") and (button==1) then
+                --                     perms[i]:animatePosition(temp, 1, 1)
+                --                 end
+                --             end)
+                        end
+                    end)
+        item[i]:addButton():setText("Delete"):setBackground(colors.red):setSize(8, 3):setPosition("parent.w - 14", 1)
+        i = i + 1
+    end
+
+
+
+--Logs(6)
+
+local page = sub[6]:addFlexbox():setPosition(2, 1):setSize("parent.w - 2", "parent.h - 1"):setWrap("wrap"):setSpacing(0)
 
 page:addLabel():setText("Logs ")
 
@@ -283,7 +349,7 @@ local showtime = page:addButton():setText("Show Timecode"):setSize(15, 1)
 
 page:addBreak()
 
-local flex = sub[5]:addScrollableFrame():setSize("parent.w - 2","parent.h - 4"):setPosition(2, 2)
+local flex = sub[6]:addScrollableFrame():setSize("parent.w - 2","parent.h - 4"):setPosition(2, 2)
 
 local function onBackReposition()
     local x, y = back:getPosition()
