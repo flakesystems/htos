@@ -245,6 +245,7 @@ function Visualiser()
         popup:addButton():setText("X"):setPosition("parent.w - 2",1):setSize(3,1):setBackground(16384)
                             :onClick(function(self,event,button,x,y)
                                 if (event=="mouse_click") and (button==1) then
+                                    popup:setZIndex(-10)
                                     popup:remove()
                                 end
                             end)
@@ -255,6 +256,7 @@ function Visualiser()
         if not btn1 == false then
             buttonflex:addButton():setText(btn1):setFlexBasis(1):setFlexGrow(1):onClick(function(self,event,button,x,y)
                                     if (event=="mouse_click") and (button==1) then
+                                        popup:setZIndex(-10)
                                         popup:remove()
                                         os.queueEvent("popup_return_event", 1)
                                     end
@@ -262,6 +264,7 @@ function Visualiser()
             if not btn2 == false then
                 buttonflex:addButton():setText(btn2):setFlexBasis(1):setFlexGrow(1):onClick(function(self,event,button,x,y)
                                         if (event=="mouse_click") and (button==1) then
+                                            popup:setZIndex(-10)
                                             popup:remove()
                                             os.queueEvent("popup_return_event", 2)
                                         end
@@ -348,7 +351,6 @@ function Visualiser()
     end)
 
     
-
     -- Start UI loop, clock updater, and label updater
     parallel.waitForAll(basalt.autoUpdate, clockRun, getLabel, network.loop)
 end

@@ -302,32 +302,72 @@ back:onReposition(onBackReposition)
 
 --Content
 
-    local item = {}
-    local perms = {}
-    -- Scan /os/apps directory and register each .lua file as an app
-    local i = 1
-    for _, file in ipairs(fs.list("/os/apps")) do
-        table.insert(item, flex:addFrame():setSize("parent.w * 2", 3):setBackground(colors.cyan))
-        table.insert(perms, main:addFrame():setSize("parent.w", "parent.h"):setPosition("parent.w + 1", 1):setBackground(colors.white))
-        local name = string.gsub(file,".lua","")
-        item[i]:addLabel():setText(name):setPosition(1, 2)
-        item[i]:addButton():setText("Permissions"):setSize(13, 3):setPosition("parent.w - 28", 1):onClick(function(self,event,button,x,y)
-            if(event=="mouse_click")and(button==1)then
-                -- local temp = perms[i]:getX()
-                -- perms[i]:animatePosition(1, 1, 1)
-                -- perms[i]:addButton():setText("<-"):setPosition(1,1):setSize(4,1):setBackground(colors.gray)
-                --             :onClick(function(self,event,button,x,y)
-                --                 if (event=="mouse_click") and (button==1) then
-                --                     perms[i]:animatePosition(temp, 1, 1)
-                --                 end
-                --             end)
+        local item = {}
+        local perms = {}
+        local entries = {}
+        -- Scan /os/apps directory and register each .lua file as an app
+        for i, file in ipairs(fs.list("/os/apps")) do
+            table.insert(item, flex:addFrame():setSize("parent.w", 3):setBackground(colors.cyan))
+            table.insert(perms, main:addFrame():setSize("parent.w", "parent.h"):setPosition("parent.w + 1", 1):setBackground(colors.white))
+            local name = string.gsub(file,".lua","")
+            item[i]:addLabel():setText(name):setPosition(1, 2)
+            item[i]:addButton():setText("Permissions"):setSize(13, 3):setPosition("parent.w - 21", 1):onClick(function(self,event,button,x,y)
+                if(event=="mouse_click")and(button==1)then
+                    local temp = perms[i]:getX()
+                    perms[i]:animatePosition(1, 1, 1)
+                    perms[i]:addButton():setText("<-"):setPosition(1,1):setSize(4,1):setBackground(colors.gray):onClick(function(self,event,button,x,y)
+                        if (event=="mouse_click") and (button==1) then
+                            perms[i]:animatePosition(temp, 1, 1)
                         end
                     end)
-        item[i]:addButton():setText("Delete"):setBackground(colors.red):setSize(8, 3):setPosition("parent.w - 14", 1)
-        i = i + 1
+                    perms[i]:addLabel():setText(name):setSize("parent.w - 1"):setTextAlign("center")
+                    local content = perms[i]:addFlexbox():setPosition(2, 3):setSize("parent.w - 2", "parent.h - 2"):setDirection("column")
+
+                    local appPath = "/os/apps/" .. file
+
+                    local s = settings.getNames()
+                    local found = false
+
+                    for _, key in ipairs(s) do
+                        local match = key:match("^perms%.@(/.-)%.os/apps/" .. file:gsub("([%.%-%+%*%?%[%]%^%$%%])", "%%%1") .. "$")
+
+                        if match then
+                            found = true
+                            
+                            local entry = content:addFrame():setSize("parent.w", 3):setBackground(colors.cyan)
+                            table.insert(entries, entry)
+                            entry:addLabel():setText(match):setPosition(1, 2)
+                            entry:addButton():setText("Revoke"):setBackground(colors.red):setSize(8, 3):setPosition("parent.w - 7", 1):onClick(function(self,event,button,x,y)
+                                if (event=="mouse_click") and (button==1) then
+                                    if print(handler.popup(colors.red, "Are you sure you want to revoke " .. match .. " from " .. name .. "?","Proceed","Cancel")) == 1 then
+                                        settings.unset(key)
+                                        settings.save()
+                                        entry:hide()
+                                        entry:remove()
+                                    end
+                                end
+                            end)
+
+                        end
+                    end
+                    
+                    if not found then
+                        content:addLabel():setText("No permissions found."):setTextAlign("center"):setSize("parent.w", 1)
+                    end
+                end
+            end)
+            item[i]:addButton():setText("Delete"):setBackground(colors.red):setSize(8, 3):setPosition("parent.w - 7", 1)
+        end
+    
+
+flex:onResize(function()
+    for _, item in ipairs(item) do
+        item:setSize("parent.w", 3)
     end
-
-
+    for _, entry in ipairs(entries) do
+        entry:setSize("parent.w", 3)
+    end
+end)
 
 --Logs(6)
 
@@ -392,5 +432,6 @@ showtime:onClick(function(self,event,button,x,y)
   end)
 
 --Update
+
 
 parallel.waitForAll(basalt.autoUpdate, updateLabel)
