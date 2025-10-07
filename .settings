@@ -1,8 +1,8 @@
 {
-  [ "perms.@/os/lib/vault.os/apps/vaulttest.lua" ] = true,
   [ "minex.programs.nfp" ] = "paint",
-  [ "dev.enabled" ] = true,
   [ "general.Label" ] = "htos0",
+  [ "perms.@/os/lib/vault.os/apps/vaulttest.lua" ] = true,
   [ "minex.default_program" ] = "edit",
+  [ "dev.enabled" ] = true,
   [ "general.timeFormat" ] = 1,
 }

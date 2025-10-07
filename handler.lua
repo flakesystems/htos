@@ -13,7 +13,11 @@ function handler.popup(color, label, btn1, btn2)
     
     while true do
         local event, id = os.pullEvent("popup_return_event")
-        return id
+        if id == 0 then
+            return
+        else
+            return id
+        end
     end
 end
 

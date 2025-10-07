@@ -247,10 +247,31 @@ function Visualiser()
                                 if (event=="mouse_click") and (button==1) then
                                     popup:setZIndex(-10)
                                     popup:remove()
+                                    os.queueEvent("popup_return_event", 0)
                                 end
                             end)
         
-        popup:addLabel():setText(label):setSize("parent.w - 1", 4):setPosition(2, 2)
+        local container = popup:addScrollableFrame():setSize("parent.w - 2", 4):setPosition(2, 2):setBackground(color)
+        local labelText = label
+        local function wrapText(text, width)
+            local lines = {}
+            for line in text:gmatch("[^\n]+") do
+                while #line > width do
+                    local spacePos = line:sub(1, width):match(".*()%s")
+                    if not spacePos or spacePos < width / 2 then
+                        spacePos = width
+                    end
+                    table.insert(lines, line:sub(1, spacePos))
+                    line = line:sub(spacePos + 1):match("^%s*(.*)$") or ""
+                end
+                table.insert(lines, line)
+            end
+            return lines
+        end
+        local labelWidth = container:getWidth()  -- actual width in characters
+        local wrapped = wrapText(labelText, labelWidth)
+        local neededHeight = #wrapped
+        container:addLabel():setText(label):setSize("parent.w", neededHeight)
         local flex = popup:addFlexbox():setBackground(color):setPosition(2, 6):setSpacing(0):setDirection("column"):setJustifyContent("flex-end"):setSize("parent.w", "parent.h - 6")
         local buttonflex = flex:addFlexbox():setBackground(color):setSize("parent.w - 1", 3):setJustifyContent("center")
         if not btn1 == false then

@@ -339,7 +339,7 @@ back:onReposition(onBackReposition)
                             entry:addLabel():setText(match):setPosition(1, 2)
                             entry:addButton():setText("Revoke"):setBackground(colors.red):setSize(8, 3):setPosition("parent.w - 7", 1):onClick(function(self,event,button,x,y)
                                 if (event=="mouse_click") and (button==1) then
-                                    if print(handler.popup(colors.red, "Are you sure you want to revoke " .. match .. " from " .. name .. "?","Proceed","Cancel")) == 1 then
+                                    if print(handler.popup(colors.red, "Are you sure you want to revoke " .. match .. " from " .. name .. "?","Revoke","Cancel")) == 1 then
                                         settings.unset(key)
                                         settings.save()
                                         entry:hide()
@@ -356,7 +356,15 @@ back:onReposition(onBackReposition)
                     end
                 end
             end)
-            item[i]:addButton():setText("Delete"):setBackground(colors.red):setSize(8, 3):setPosition("parent.w - 7", 1)
+            item[i]:addButton():setText("Delete"):setBackground(colors.red):setSize(8, 3):setPosition("parent.w - 7", 1):onClick(function(self,event,button,x,y)
+                if (event=="mouse_click") and (button==1) then
+                    if print(handler.popup(colors.red, "Are you sure you want to uninstall " .. name .. "? Your System will reload. Any unsaved changes will be lost!","Proceed","Cancel")) == 1 then
+                        local appPath = "/os/apps/" .. file
+                        fs.delete(appPath)
+                        handler.fastreboot()
+                    end
+                end
+            end)
         end
     
 
