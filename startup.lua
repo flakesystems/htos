@@ -1,5 +1,6 @@
 -- startup
 -- This script runs on computer startup to initialize logging
+local completion = require("cc.completion")
 
 -- Define the base directory for logs
 local logBaseDir = "/os/logs/"
@@ -17,4 +18,14 @@ end
 
 if fs.exists(logBaseDir .. "latest.log") then
     fs.move(logBaseDir .. "latest.log", logArchiveDir .. os.epoch("utc") .. ".log.gz")
- end
+end
+
+local path = shell.path()
+local myFolder = "/os/lib/cli"
+
+-- check if already in path
+if not path:find(myFolder, 1, true) then
+    shell.setPath(path .. ":" .. myFolder)
+end
+
+shell.run("ht-get init")
