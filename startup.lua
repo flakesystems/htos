@@ -29,3 +29,4 @@ if not path:find(myFolder, 1, true) then
 end
 
 shell.run("ht-get init")
+shell.run("ht-ctl init")

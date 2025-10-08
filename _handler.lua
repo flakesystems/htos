@@ -3,8 +3,12 @@ local handler = {}
 
 function handler.fastreboot()
     fs.move("/startup.lua","/tempstartup.lua")
+    local file =fs.open("/fastreboot.lua", "r")
+    local script = file.readAll()
+    file.close()
     local file = fs.open("/startup.lua","w")
-    file.write("fs.delete('/startup.lua')fs.move('/tempstartup.lua','/startup.lua')shell.run('/main.lua')")
+    file.write(script)
+    file.close()
     os.reboot()
 end
 

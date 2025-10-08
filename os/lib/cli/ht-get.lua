@@ -69,10 +69,12 @@ if args[1] == "install" then
     end
 end
 
+
+
 if args[1] == "init" then
     local function complete(shell, index, text, previous)
     if index == 1 then
-        return completion.choice(text, {"install ", "remove ", "update ", "list ", "lookup "})
+        return completion.choice(text, {"install ", "remove ", "update ", "list", "lookup "})
     elseif index == 2 then
         if previous[2] == "install" or previous[2] == "lookup" then
             return completion.choice(text, packages)
