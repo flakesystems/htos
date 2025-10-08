@@ -1,8 +1,8 @@
 function Visualiser()
     -- Import dependencies
-    require("_log")
-    local network = require("_network")
-    local basalt = require("_basalt")
+    require("/_log")
+    local network = require("/_network")
+    local basalt = require("/_basalt")
 
     -- Create main UI frame with theme
     local main = basalt.addFrame():setTheme({

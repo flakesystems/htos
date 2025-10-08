@@ -1,5 +1,5 @@
-local basalt = require("_basalt")
-local handler = require("_handler")
+local basalt = require("/_basalt")
+local handler = require("/_handler")
 local versionfile = fs.open("version.txt", "r")
 local version = versionfile.readAll()
 versionfile.close()

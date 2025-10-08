@@ -1,5 +1,5 @@
-local handler = require("_handler")
-local basalt = require("_basalt")
+local handler = require("/_handler")
+local basalt = require("/_basalt")
 
 local main = basalt.createFrame():setTheme({FrameBG = colors.lightGray, FrameFG = colors.black})
 

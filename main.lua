@@ -1,2 +1,2 @@
-require("_visualiser")
+require("/_visualiser")
 parallel.waitForAll(Visualiser)

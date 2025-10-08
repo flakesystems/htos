@@ -1,4 +1,4 @@
-require("_visualiser")
+require("/_visualiser")
 local handler = {}
 
 function handler.fastreboot()
