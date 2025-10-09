@@ -33,7 +33,7 @@ local function sendInternal(targetID, app, param, data)
             deviceName,
             deviceType,
             "D5", "D6", "D7", -- Dummydaten
-            tostring(string.gsub(app, ",", "-3ibu4w")), 
+            tostring(string.gsub(app, ",", "-3ibu4w")),
             tostring(string.gsub(param, ",", "-3ibu4w")),
             tostring(string.gsub(data, ",", "-3ibu4w"))
         }, ",")

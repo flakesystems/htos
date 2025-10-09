@@ -1,4 +1,5 @@
 local completion = require("cc.completion")
+local db = require("/os/lib/ht-db")
 
 local args = { ... }
 
