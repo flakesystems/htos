@@ -1,3 +1,16 @@
+local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/calc/installer.lua")
+if response then
+    local code = response.readAll()
+    if fs.exists("/os/apps/calc/installer.lua") then
+        fs.delete("/os/apps/calc/installer.lua")
+    end
+    local file = fs.open("/os/apps/calc/installer.lua", "w")
+    file.write(code)
+    file.close()
+else
+    print("Error while installing calc")
+end
+
 local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/calc/updater.lua")
 if response then
     local code = response.readAll()
