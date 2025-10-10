@@ -145,12 +145,8 @@ local function checkforupdate()
       print("[*] Newest Version: " .. newversion)
     if (newversion ~= version) then
       sleep(1)
-      if fs.exists("update.lua") then
-        fs.delete("update.lua") -- Lösche die Datei, falls sie bereits existiert
-      end
-      shell.run("pastebin get " .. "bi6C2PcM" .. " " .. "update.lua")
       print("[*] Updating...")
-      --shell.run("_update.lua")
+      shell.run("_update.lua")
     end
 end
 
