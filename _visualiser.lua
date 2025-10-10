@@ -90,7 +90,7 @@ for _, file in ipairs(fs.list("/os/apps")) do
                 auto_update = false,
                 versionfile = nil,
                 installer = nil,
-                uninstaller = nil,
+                uninstaller = "delete " .. "/os/apps/" .. string.gsub(file,".lua",""),
                 system_app = false,
                 index = i,
                 sub = 0,

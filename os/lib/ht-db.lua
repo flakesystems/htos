@@ -32,9 +32,10 @@ local function dummyTable(err)
 end
 
 --========== Database creation ==========--
-function db.create(name, path, doexistcheck)
-    if type(path) == "boolean" and doexistcheck == nil then
-        doexistcheck = path
+function db.create(name, path, overwrite)
+    -- argument handling
+    if type(path) == "boolean" and overwrite == nil then
+        overwrite = path
         path = "/os/storage/db"
     else
         path = path or "/os/storage/db"
@@ -46,11 +47,24 @@ function db.create(name, path, doexistcheck)
 
     local fullPath = path .. name .. ".db"
 
-    if fs.exists(fullPath) and doexistcheck then
-        print("Warning: database already exists:", fullPath)
-        return dummyDB("database already exists"), false
+    -- If database already exists, load it instead of overwriting
+    if fs.exists(fullPath) and not overwrite then
+        local self = {
+            name = name,
+            path = fullPath,
+            tables = {}
+        }
+        setmetatable(self, db)
+        self:load()  -- Load the existing data
+        return self
     end
 
+    -- If overwrite is explicitly true, recreate the file
+    if fs.exists(fullPath) and overwrite then
+        fs.delete(fullPath)
+    end
+
+    -- Create a new file if it doesn't exist
     if not fs.exists(fullPath) then
         local f = fs.open(fullPath, "w")
         if not f then
@@ -69,6 +83,7 @@ function db.create(name, path, doexistcheck)
 
     return setmetatable(self, db)
 end
+
 
 --========== Load DB from file ==========--
 function db:load()
@@ -143,14 +158,16 @@ function db:delete()
 end
 
 --========== Create a new table ==========--
-function db:createTable(name, columns)
+function db:createTable(name, columns, doexistcheck)
     if not self then
         return dummyTable("invalid database object")
     end
 
-    if self.tables[name] then
+    if self.tables[name] and doexistcheck == true then
         print("Warning: table already exists:", name)
         return dummyTable("table already exists")
+    elseif self.tables[name] then
+        return self.tables[name]
     end
 
     local t = setmetatable({
@@ -229,11 +246,6 @@ function dbtable:insert(row)
                 print("Error: column", col.name, "expects string, got", type(val))
                 return false
             end
-        end
-
-        if val == nil and not col.auto_increment and col.default == nil then
-            print("Error: missing value for column", col.name)
-            return false
         end
 
         newRow[col.name] = val
