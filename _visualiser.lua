@@ -387,23 +387,24 @@ end
 
     -- Connection status label
     local conn = connframe:addLabel()
-    conn:setText("IIII")
-
-    --local function getConn()
-    --    while true do
-    --        while not network.isConnected() do
-    --           conn:setText("I")
-    --           conn:show()
-    --            sleep(1)
-    --            conn:hide()
-    --            sleep(1)
-    --        end
-    --        while network.isConnected() do
-    --           conn:setText("IIII")
-    --           conn:show()
-    --        end
-    --    end
-    --end
+    timeout = 0
+    conn:setText("CONNECTING")
+    conn:show()
+    local function getConn()
+        while true do
+            timeout = timeout + 1
+            ifnetwork.isConnected() then
+                conn:setText("CONNECTED")
+                timeout = 0
+            else
+                if timeout > 5 then
+                    conn:setText("NOT CONNECTED")
+                else
+                    conn:setText("CONNECTING")
+                end
+            end
+        end
+    end
 
     -- Clock update loop
     local function clockRun()
@@ -441,5 +442,5 @@ end
 
     
     -- Start UI loop, clock updater, and label updater
-    parallel.waitForAll(basalt.autoUpdate, clockRun, getLabel, network.loop)
+    parallel.waitForAll(basalt.autoUpdate, clockRun, getLabel, network.loop, getConn)
 end
