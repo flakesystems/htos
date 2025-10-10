@@ -425,6 +425,7 @@ end
         while true do
             local Label = settings.get("general.Label")
             os.setComputerLabel(Label)
+            network.name(Label, "htos device")
             sleep(1)
         end    
     end
