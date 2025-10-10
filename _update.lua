@@ -15,7 +15,7 @@ local function installBasalt()
 -- Wait until Basalt is downloaded and installed
     print("Waiting for Basalt to be downloaded...")
     sleep(1)  -- Wait for a second before checking again
-if fs.exists("basalt.lua") then
+if fs.exists("basalt.lua") and not fs.exists() then
     fs.move("basalt.lua","_basalt.lua")
 end
 end
@@ -24,10 +24,12 @@ local function install()
     
     local networkfileCode = "ZLcJcYtq"
     local networkfileName = "_network.lua"
+    local versionlink = "m5CDWzU7"
 
     shell.run("pastebin get " .. networkfileCode .. " " .. networkfileName)
+    shell.run("pastebin get " .. versionlink .. " version.txt")
 
-    local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/startup.lua")
+    local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/startup.lua")    
     if response then
         local code = response.readAll()
         local file = fs.open("/startup.lua", "w")
