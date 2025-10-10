@@ -370,7 +370,7 @@ end
     -- Bottom status bar frames
     local botframe = main:addFrame():setPosition(0 ,"parent.h"):setSize("parent.w"):setBackground(colors.black):setForeground(colors.white)
     local clockframe = main:addFrame():setPosition(1,"parent.h"):setSize("parent.w"):setBackground(colors.black):setForeground(colors.white)
-    local connframe = main:addFrame():setPosition("parent.w - 3","parent.h"):setSize("parent.w"):setBackground(colors.black):setForeground(colors.white)
+    local connframe = main:addFrame():setPosition("parent.w - 12","parent.h"):setSize("parent.w"):setBackground(colors.black):setForeground(colors.white)
     clockframe:setImportant()
 
 
@@ -388,21 +388,22 @@ end
     -- Connection status label
     local conn = connframe:addLabel()
     local timeout = 0
-    conn:setText("CONNECTING")
+    conn:setText("   CONNECTING")
     conn:show()
     local function getConn()
         while true do
             timeout = timeout + 1
             if (network.isConnected()) then
-                conn:setText("CONNECTED")
+                conn:setText("    CONNECTED")
                 timeout = 0
             else
                 if timeout > 5 then
                     conn:setText("NOT CONNECTED")
                 else
-                    conn:setText("CONNECTING")
+                    conn:setText("   CONNECTING")
                 end
             end
+            sleep(1)
         end
     end
 
