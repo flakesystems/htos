@@ -10,12 +10,15 @@ local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/r
 
 -- Basalt installieren
 local function installBasalt()
-    shell.run("wget run https://raw.githubusercontent.com/Pyroxenium/Basalt/refs/heads/master/docs/install.lua release basalt-1.7.0.lua")
+    if not fs.exists("_basalt.lua") then
+        shell.run("wget run https://raw.githubusercontent.com/Pyroxenium/Basalt/refs/heads/master/docs/install.lua release basalt-1.7.0.lua")
+    end
+    
 
 -- Wait until Basalt is downloaded and installed
     print("Waiting for Basalt to be downloaded...")
     sleep(1)  -- Wait for a second before checking again
-if fs.exists("basalt.lua") and not fs.exists() then
+if fs.exists("basalt.lua") and not fs.exists("_basalt.lua") then
     fs.move("basalt.lua","_basalt.lua")
 end
 end
