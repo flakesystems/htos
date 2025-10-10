@@ -64,7 +64,7 @@ function vault.store(filename, value, key)
   if handler.checkperms() then
     local vaultfile = Hash(filename)
     if fs.exists("/os/vault/" .. vaultfile .. ".vlt") then
-      local file = fs.open("/os/vault/" .. vaultfile .. ".vlt", "w+")
+      local file = fs.open("/os/vault/" .. vaultfile .. ".vlt", "w")
       file.write(Encrypt(value, key))
       file.close()
     end
