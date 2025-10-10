@@ -183,7 +183,7 @@ end
     -- Helper to find app index by name
     function CheckAppName(name)
         for _, app in ipairs(NewApp) do
-            if app.name == name then return app.index end
+            if app.id == name then return app.index end
         end
         return nil
     end
