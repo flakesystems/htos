@@ -103,10 +103,8 @@ for _, file in ipairs(fs.list("/os/lib/cli")) do
     end
 end
 
-local versionfile = fs.open("version.txt", "r")
-local version = versionfile.readAll()
-versionfile.close()
-local versionlink = "m5CDWzU7"
+
+
 
 
 --Define Config
@@ -128,7 +126,15 @@ settings.define("dev.enabled", {
 })
 settings.save(".settings")
 
+local versionfile = fs.open("version.txt", "r")
+    local version = versionfile.readAll()
+    versionfile.close()
+    local versionlink = "m5CDWzU7"
 
+if not fs.exists("version.txt") then
+    versionfile = fs.open("version.txt", "w")
+    versionfile.close()
+end
  --Check for updates
 
 local function checkforupdate()
