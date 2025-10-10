@@ -13,10 +13,8 @@ local function installBasalt()
     shell.run("wget run https://raw.githubusercontent.com/Pyroxenium/Basalt/refs/heads/master/docs/install.lua release basalt-1.7.0.lua")
 
 -- Wait until Basalt is downloaded and installed
-while not fs.exists("basalt.lua") or not fs.exists("_basalt.lua") do
     print("Waiting for Basalt to be downloaded...")
     sleep(1)  -- Wait for a second before checking again
-end
 if fs.exists("basalt.lua") then
     fs.move("basalt.lua","_basalt.lua")
 end
