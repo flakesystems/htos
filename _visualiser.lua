@@ -393,7 +393,7 @@ end
     local function getConn()
         while true do
             timeout = timeout + 1
-            ifnetwork.isConnected() then
+            if network.isConnected() then
                 conn:setText("CONNECTED")
                 timeout = 0
             else
