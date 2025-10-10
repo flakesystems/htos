@@ -25,14 +25,21 @@ end
 
 local function install()
     
-    local networkfileCode = "ZLcJcYtq"
-    local networkfileName = "_network.lua"
     local versionlink = "m5CDWzU7"
 
-    shell.run("pastebin get " .. networkfileCode .. " " .. networkfileName)
     shell.run("pastebin get " .. versionlink .. " version.txt")
 
-    local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/startup.lua")    
+    local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/_network.lua")
+    if response then
+        local code = response.readAll()
+        local file = fs.open("/_network.lua", "w")
+        file.write(code)
+        file.close()
+    else
+        print("Error while installing network core")
+    end
+
+    local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/startup.lua")
     if response then
         local code = response.readAll()
         local file = fs.open("/startup.lua", "w")
