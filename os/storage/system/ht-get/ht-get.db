@@ -3,18 +3,6 @@
     installedpackages = {
       rows = {
         {
-          uninstaller = "/os/apps/calc/uninstaller.lua",
-          installer = "pastebin get ApLvEf5x /os/apps/calc/updater.lua",
-          run = "/os/apps/calc/calc.lua",
-          identifier = "calc",
-          author = "Kuschelcraft",
-          versionfile = "pastebin get m5CDWzU7 /os/apps/calc/version.txt",
-          id = 25,
-          type = "app",
-          updater = "/os/apps/calc/updater.lua",
-          version = "beta-1.0",
-        },
-        {
           uninstaller = "/os/apps/htmarket/uninstaller.lua",
           installer = "pastebin get ApLvEf5x /os/apps/htmarket/updater.lua",
           run = "/os/apps/htmarket/htmarket.lua",
@@ -99,22 +87,34 @@
           type = "library",
         },
         {
-          uninstaller = "delete /os/lib/networking.lua",
           id = 41,
-          type = "library",
+          uninstaller = "delete /os/lib/networking.lua",
           identifier = "networking",
+          type = "library",
         },
         {
-          uninstaller = "delete /os/lib/cli/ht-ctl.lua",
           id = 42,
-          type = "cli",
+          uninstaller = "delete /os/lib/cli/ht-ctl.lua",
           identifier = "ht-ctl",
+          type = "cli",
         },
         {
-          uninstaller = "delete /os/lib/cli/ht-get.lua",
           id = 43,
-          type = "cli",
+          uninstaller = "delete /os/lib/cli/ht-get.lua",
           identifier = "ht-get",
+          type = "cli",
+        },
+        {
+          uninstaller = "/os/apps/calc/uninstaller.lua",
+          installer = "wget run https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/calc/installer.lua",
+          run = "/os/apps/calc/calc.lua",
+          identifier = "calc",
+          author = "Kuschelcraft",
+          versionfile = "pastebin get m5CDWzU7 /os/apps/vaultmanager/version.txt",
+          id = 45,
+          type = "app",
+          updater = "/os/apps/calc/updater.lua",
+          version = "beta-1.0",
         },
       },
       columns = {
@@ -161,7 +161,7 @@
         },
       },
       auto_increment_counters = {
-        id = 43,
+        id = 45,
       },
     },
   },
