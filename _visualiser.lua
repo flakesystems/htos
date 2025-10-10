@@ -387,13 +387,13 @@ end
 
     -- Connection status label
     local conn = connframe:addLabel()
-    timeout = 0
+    local timeout = 0
     conn:setText("CONNECTING")
     conn:show()
     local function getConn()
         while true do
             timeout = timeout + 1
-            if network.isConnected() then
+            if (network.isConnected()) then
                 conn:setText("CONNECTED")
                 timeout = 0
             else
