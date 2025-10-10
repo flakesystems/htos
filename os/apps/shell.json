@@ -7,7 +7,7 @@
     "updater": "/os/apps/shell/updater.lua",
     "automatic_updates": true,
     "versionfile": "pastebin get m5CDWzU7 /os/apps/shell/version.txt",
-    "installer": "pastebin get ApLvEf5x /os/apps/shell/updater.lua",
+    "installer": "wget run https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/shell/installer.lua",
     "uninstaller": "/os/apps/shell/uninstaller.lua",
     "system_app": true
 }

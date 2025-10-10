@@ -1,0 +1,1 @@
+fs.delete("/os/apps/calc")

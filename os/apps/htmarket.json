@@ -7,7 +7,7 @@
     "updater": "/os/apps/htmarket/updater.lua",
     "automatic_updates": true,
     "versionfile": "pastebin get m5CDWzU7 /os/apps/htmarket/version.txt",
-    "installer": "pastebin get ApLvEf5x /os/apps/htmarket/updater.lua",
+    "installer": "wget run https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/htmarket/installer.lua",
     "uninstaller": "/os/apps/htmarket/uninstaller.lua",
     "system_app": true
 }

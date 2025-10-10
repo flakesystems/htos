@@ -1,0 +1,9 @@
+local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/shell/shell.lua")
+    if response then
+        local code = response.readAll()
+        local file = fs.open("shell.lua", "w")
+        file.write(code)
+        file.close()
+    else
+        print("Error while updating shell")
+    end
