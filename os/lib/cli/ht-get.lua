@@ -3,6 +3,18 @@ local db = require("/os/lib/ht-db")
 
 local args = { ... }
 
+if args[1] == "update" then
+    local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/lib/cli/ht-get.lua")
+    if response then
+        local code = response.readAll()
+        local file = fs.open("/os/lib/cli/ht-get.lua", "w")
+        file.write(code)
+        file.close()
+    else
+        print("Error while updating ht-get")
+    end
+end
+
 local res = http.get("http://ht-get.boistou.de")
 local data = textutils.unserializeJSON(res.readAll())
 res.close()

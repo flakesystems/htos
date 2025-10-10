@@ -1,3 +1,13 @@
+local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/notes/installer.lua")
+    if response then
+        local code = response.readAll()
+        local file = fs.open("/os/apps/notes/installer.lua", "w")
+        file.write(code)
+        file.close()
+    else
+        print("Error while installing notes")
+    end
+
 local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/apps/notes/updater.lua")
     if response then
         local code = response.readAll()

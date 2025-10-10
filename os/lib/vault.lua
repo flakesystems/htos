@@ -1,5 +1,19 @@
 local handler = require("/_handler")
 
+local args = { ... }
+
+if args[1] == "update" then
+    local response = http.get("https://raw.githubusercontent.com/flakesystems/htos/refs/heads/main/os/lib/vault.lua")
+    if response then
+        local code = response.readAll()
+        local file = fs.open("/os/lib/vault.lua", "w")
+        file.write(code)
+        file.close()
+    else
+        print("Error while updating ht-get")
+    end
+end
+
 local vault = {}
 
 function Hash(str)
