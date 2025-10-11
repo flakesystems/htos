@@ -57,8 +57,12 @@ function vault.create(filename)
       local new = fs.open("/os/vault/" .. vaultfile .. ".vlt", "w")
         new.close()
     end
+    return true
   end
+  return false
 end
+
+
 
 function vault.store(filename, value, key)
   if handler.checkperms() then
@@ -67,8 +71,10 @@ function vault.store(filename, value, key)
       local file = fs.open("/os/vault/" .. vaultfile .. ".vlt", "w")
       file.write(Encrypt(value, key))
       file.close()
+      return true
     end
   end
+  return false
 end
 
 function vault.get(filename, key)
@@ -81,6 +87,7 @@ function vault.get(filename, key)
       return Decrypt(data, key)
     end
   end
+  return nil
 end
 
 return vault
