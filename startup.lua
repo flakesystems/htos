@@ -158,6 +158,11 @@ end
 
 local function main()
     checkforupdate()
+    if not fs.exists("version.txt") then
+        local versionfile = fs.open("version.txt", "w")
+        versionfile.write(version)
+        versionfile.close()
+    end
     sleep(1)
     shell.run("main.lua")
     shell.exit()
